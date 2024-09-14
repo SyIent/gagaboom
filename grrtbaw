@@ -1,7 +1,5 @@
--- UILibrary Module
 local UILibrary = {}
 
--- Dragging function (as before)
 local function makeDraggable(frame, handle)
     local dragging, dragInput, dragStart, startPos
 
@@ -33,21 +31,18 @@ local function makeDraggable(frame, handle)
     end)
 end
 
--- Create a new window with tabs on the left and content on the right
 function UILibrary:CreateWindow(config)
     local ScreenGui = Instance.new("ScreenGui")
     ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
-    -- Main Frame for the UI
     local MainFrame = Instance.new("Frame")
-    MainFrame.Size = UDim2.new(0, 300, 0, 300)  -- Reduced size for the entire frame
-    MainFrame.Position = UDim2.new(0.5, -150, 0.5, -150)  -- Centered on screen
+    MainFrame.Size = UDim2.new(0, 300, 0, 300)
+    MainFrame.Position = UDim2.new(0.5, -150, 0.5, -150)
     MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
     MainFrame.Parent = ScreenGui
 
-    -- First Frame (Left) for tabs and title
     local LeftFrame = Instance.new("Frame")
-    LeftFrame.Size = UDim2.new(0, 100, 1, 0)  -- Smaller width for the left frame
+    LeftFrame.Size = UDim2.new(0, 100, 1, 0)
     LeftFrame.Position = UDim2.new(0, 0, 0, 0)
     LeftFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     LeftFrame.Parent = MainFrame
@@ -60,19 +55,16 @@ function UILibrary:CreateWindow(config)
     Title.TextColor3 = Color3.fromRGB(255, 255, 255)
     Title.Parent = LeftFrame
 
-    -- Enable dragging of the entire UI using the Title bar
     makeDraggable(MainFrame, Title)
 
-    -- Second Frame (Right) for the tab contents
     local RightFrame = Instance.new("Frame")
-    RightFrame.Size = UDim2.new(1, -100, 1, 0)  -- Take the rest of the space in MainFrame
-    RightFrame.Position = UDim2.new(0, 100, 0, 0)  -- Positioned right after LeftFrame
+    RightFrame.Size = UDim2.new(1, -100, 1, 0)
+    RightFrame.Position = UDim2.new(0, 100, 0, 0)
     RightFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
     RightFrame.Parent = MainFrame
 
-    -- Tabs container
     local TabsContainer = Instance.new("Frame")
-    TabsContainer.Size = UDim2.new(1, 0, 1, -40)  -- Occupy the space below the title in the LeftFrame
+    TabsContainer.Size = UDim2.new(1, 0, 1, -40)
     TabsContainer.Position = UDim2.new(0, 0, 0, 40)
     TabsContainer.BackgroundTransparency = 1
     TabsContainer.Parent = LeftFrame
@@ -81,7 +73,6 @@ function UILibrary:CreateWindow(config)
     local currentContent
 
     function tabs:CreateTab(name)
-        -- Create a button for the tab
         local TabButton = Instance.new("TextButton")
         TabButton.Size = UDim2.new(1, 0, 0, 30)
         TabButton.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
@@ -90,7 +81,6 @@ function UILibrary:CreateWindow(config)
         TabButton.TextSize = 14
         TabButton.Parent = TabsContainer
 
-        -- Create a content frame for the tab in the RightFrame
         local TabContent = Instance.new("Frame")
         TabContent.Size = UDim2.new(1, 0, 1, 0)
         TabContent.Visible = false
@@ -98,17 +88,14 @@ function UILibrary:CreateWindow(config)
         TabContent.Parent = RightFrame
 
         TabButton.MouseButton1Click:Connect(function()
-            -- Hide previous tab content
             if currentContent then
                 currentContent.Visible = false
             end
 
-            -- Show the new tab content
             TabContent.Visible = true
             currentContent = TabContent
         end)
 
-        -- Return the content frame for adding buttons, sliders, etc.
         local tabElements = {}
 
         function tabElements:CreateSwitch(name, defaultState, callback)
@@ -160,7 +147,7 @@ function UILibrary:CreateWindow(config)
             Slider.Parent = SliderFrame
 
             Slider.MouseButton1Click:Connect(function()
-                local value = math.random(min, max) -- Replace this with actual slider functionality
+                local value = math.random(min, max)
                 Slider.Text = tostring(value)
                 callback(value)
             end)
