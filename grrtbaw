@@ -1,7 +1,7 @@
 -- UILibrary Module
 local UILibrary = {}
 
--- Function to enable dragging for a frame (PC and Mobile)
+-- Dragging function (as before)
 local function makeDraggable(frame, handle)
     local dragging, dragInput, dragStart, startPos
 
@@ -33,58 +33,75 @@ local function makeDraggable(frame, handle)
     end)
 end
 
--- Create a new window with a title (no size and position input)
+-- Create a new window with tabs on the left and content on the right
 function UILibrary:CreateWindow(config)
     local ScreenGui = Instance.new("ScreenGui")
     ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
-    local MainFrame = Instance.new("Frame")
-    MainFrame.Size = UDim2.new(0, 600, 0, 400)  -- Default size
-    MainFrame.Position = UDim2.new(0.5, -300, 0.5, -200)  -- Centered by default
-    MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-    MainFrame.Parent = ScreenGui
+    -- First Frame (Left) for tabs and title
+    local LeftFrame = Instance.new("Frame")
+    LeftFrame.Size = UDim2.new(0, 200, 1, 0)  -- Fixed width for the left frame
+    LeftFrame.Position = UDim2.new(0, 0, 0, 0)
+    LeftFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    LeftFrame.Parent = ScreenGui
 
     local Title = Instance.new("TextLabel")
-    Title.Size = UDim2.new(1, 0, 0, 40)
+    Title.Size = UDim2.new(1, 0, 0, 50)
     Title.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    Title.Text = config.Title or "Window"
+    Title.Text = config.Title or "NEVERWIN"
     Title.TextSize = 24
     Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Title.Parent = MainFrame
+    Title.Parent = LeftFrame
 
-    -- Enable dragging of the window using the Title bar
-    makeDraggable(MainFrame, Title)
+    -- Enable dragging of the entire UI using the Title bar
+    makeDraggable(LeftFrame, Title)
 
-    -- Store the tabs and elements
+    -- Second Frame (Right) for the tab contents
+    local RightFrame = Instance.new("Frame")
+    RightFrame.Size = UDim2.new(1, -200, 1, 0)  -- Take the rest of the screen width
+    RightFrame.Position = UDim2.new(0, 200, 0, 0)
+    RightFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    RightFrame.Parent = ScreenGui
+
+    -- Tabs container
+    local TabsContainer = Instance.new("Frame")
+    TabsContainer.Size = UDim2.new(1, 0, 1, -50)  -- Occupy the space below the title in the LeftFrame
+    TabsContainer.Position = UDim2.new(0, 0, 0, 50)
+    TabsContainer.BackgroundTransparency = 1
+    TabsContainer.Parent = LeftFrame
+
     local tabs = {}
-    
+    local currentContent
+
     function tabs:CreateTab(name)
+        -- Create a button for the tab
         local TabButton = Instance.new("TextButton")
-        TabButton.Size = UDim2.new(0, 100, 0, 30)
+        TabButton.Size = UDim2.new(1, 0, 0, 40)
         TabButton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
         TabButton.Text = name
         TabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
         TabButton.TextSize = 18
-        TabButton.Parent = MainFrame
+        TabButton.Parent = TabsContainer
 
+        -- Create a content frame for the tab in the RightFrame
         local TabContent = Instance.new("Frame")
-        TabContent.Size = UDim2.new(1, 0, 1, -70)
-        TabContent.Position = UDim2.new(0, 0, 0, 40)
+        TabContent.Size = UDim2.new(1, 0, 1, 0)
         TabContent.Visible = false
-        TabContent.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-        TabContent.Parent = MainFrame
+        TabContent.BackgroundTransparency = 1
+        TabContent.Parent = RightFrame
 
-        -- Toggle visibility between tabs
         TabButton.MouseButton1Click:Connect(function()
-            for _, siblingTab in ipairs(MainFrame:GetChildren()) do
-                if siblingTab:IsA("Frame") then
-                    siblingTab.Visible = false
-                end
+            -- Hide previous tab content
+            if currentContent then
+                currentContent.Visible = false
             end
+
+            -- Show the new tab content
             TabContent.Visible = true
+            currentContent = TabContent
         end)
 
-        -- Return tab content frame to add elements
+        -- Return the content frame for adding buttons, sliders, etc.
         local tabElements = {}
 
         function tabElements:CreateSwitch(name, defaultState, callback)
@@ -136,7 +153,7 @@ function UILibrary:CreateWindow(config)
             Slider.Parent = SliderFrame
 
             Slider.MouseButton1Click:Connect(function()
-                local value = math.random(min, max) -- replace with actual slider functionality
+                local value = math.random(min, max) -- Replace this with actual slider functionality
                 Slider.Text = tostring(value)
                 callback(value)
             end)
