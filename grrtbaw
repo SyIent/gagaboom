@@ -40,44 +40,33 @@ function UILibrary:CreateWindow(config)
 
     -- First Frame (Left) for tabs and title
     local LeftFrame = Instance.new("Frame")
-    LeftFrame.Size = UDim2.new(0, 200, 1, 0)  -- Fixed width for the left frame
+    LeftFrame.Size = UDim2.new(0, 150, 1, 0)  -- Smaller width for the left frame
     LeftFrame.Position = UDim2.new(0, 0, 0, 0)
     LeftFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-    LeftFrame.BackgroundTransparency = 0.6
     LeftFrame.Parent = ScreenGui
 
     local Title = Instance.new("TextLabel")
-    Title.Size = UDim2.new(1, 0, 0, 50)
+    Title.Size = UDim2.new(1, 0, 0, 40)
     Title.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     Title.Text = config.Title or "NEVERWIN"
-    Title.TextSize = 24
+    Title.TextSize = 20
     Title.TextColor3 = Color3.fromRGB(255, 255, 255)
     Title.Parent = LeftFrame
-
-    -- Adding rounded corners to LeftFrame
-    local UICornerLeft = Instance.new("UICorner")
-    UICornerLeft.CornerRadius = UDim.new(0, 12)
-    UICornerLeft.Parent = LeftFrame
 
     -- Enable dragging of the entire UI using the Title bar
     makeDraggable(LeftFrame, Title)
 
     -- Second Frame (Right) for the tab contents
     local RightFrame = Instance.new("Frame")
-    RightFrame.Size = UDim2.new(1, -200, 1, 0)  -- Take the rest of the screen width
-    RightFrame.Position = UDim2.new(0, 200, 0, 0)
+    RightFrame.Size = UDim2.new(1, -150, 1, 0)  -- Adjust width to match LeftFrame size
+    RightFrame.Position = UDim2.new(0, 150, 0, 0)  -- Positioned right after LeftFrame
     RightFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     RightFrame.Parent = ScreenGui
 
-    -- Adding rounded corners to RightFrame
-    local UICornerRight = Instance.new("UICorner")
-    UICornerRight.CornerRadius = UDim.new(0, 12)
-    UICornerRight.Parent = RightFrame
-
     -- Tabs container
     local TabsContainer = Instance.new("Frame")
-    TabsContainer.Size = UDim2.new(1, 0, 1, -50)  -- Occupy the space below the title in the LeftFrame
-    TabsContainer.Position = UDim2.new(0, 0, 0, 50)
+    TabsContainer.Size = UDim2.new(1, 0, 1, -40)  -- Occupy the space below the title in the LeftFrame
+    TabsContainer.Position = UDim2.new(0, 0, 0, 40)
     TabsContainer.BackgroundTransparency = 1
     TabsContainer.Parent = LeftFrame
 
@@ -87,11 +76,11 @@ function UILibrary:CreateWindow(config)
     function tabs:CreateTab(name)
         -- Create a button for the tab
         local TabButton = Instance.new("TextButton")
-        TabButton.Size = UDim2.new(1, 0, 0, 40)
+        TabButton.Size = UDim2.new(1, 0, 0, 30)
         TabButton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
         TabButton.Text = name
         TabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        TabButton.TextSize = 18
+        TabButton.TextSize = 16
         TabButton.Parent = TabsContainer
 
         -- Create a content frame for the tab in the RightFrame
@@ -117,7 +106,7 @@ function UILibrary:CreateWindow(config)
 
         function tabElements:CreateSwitch(name, defaultState, callback)
             local SwitchFrame = Instance.new("Frame")
-            SwitchFrame.Size = UDim2.new(1, 0, 0, 40)
+            SwitchFrame.Size = UDim2.new(1, 0, 0, 30)
             SwitchFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
             SwitchFrame.Parent = TabContent
 
@@ -125,12 +114,12 @@ function UILibrary:CreateWindow(config)
             Label.Size = UDim2.new(0.7, 0, 1, 0)
             Label.Text = name
             Label.TextColor3 = Color3.fromRGB(255, 255, 255)
-            Label.TextSize = 16
+            Label.TextSize = 14
             Label.Parent = SwitchFrame
 
             local Switch = Instance.new("TextButton")
-            Switch.Size = UDim2.new(0.2, 0, 0.8, 0)
-            Switch.Position = UDim2.new(0.75, 0, 0.1, 0)
+            Switch.Size = UDim2.new(0.2, 0, 0.6, 0)
+            Switch.Position = UDim2.new(0.75, 0, 0.2, 0)
             Switch.Text = defaultState and "On" or "Off"
             Switch.TextColor3 = defaultState and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
             Switch.Parent = SwitchFrame
@@ -145,7 +134,7 @@ function UILibrary:CreateWindow(config)
 
         function tabElements:CreateSlider(name, min, max, default, callback)
             local SliderFrame = Instance.new("Frame")
-            SliderFrame.Size = UDim2.new(1, 0, 0, 40)
+            SliderFrame.Size = UDim2.new(1, 0, 0, 30)
             SliderFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
             SliderFrame.Parent = TabContent
 
@@ -153,12 +142,12 @@ function UILibrary:CreateWindow(config)
             Label.Size = UDim2.new(0.5, 0, 1, 0)
             Label.Text = name
             Label.TextColor3 = Color3.fromRGB(255, 255, 255)
-            Label.TextSize = 16
+            Label.TextSize = 14
             Label.Parent = SliderFrame
 
             local Slider = Instance.new("TextButton")
-            Slider.Size = UDim2.new(0.4, 0, 0.8, 0)
-            Slider.Position = UDim2.new(0.55, 0, 0.1, 0)
+            Slider.Size = UDim2.new(0.4, 0, 0.6, 0)
+            Slider.Position = UDim2.new(0.55, 0, 0.2, 0)
             Slider.Text = tostring(default)
             Slider.TextColor3 = Color3.fromRGB(0, 255, 0)
             Slider.Parent = SliderFrame
