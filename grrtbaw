@@ -38,30 +38,37 @@ function UILibrary:CreateWindow(config)
     local ScreenGui = Instance.new("ScreenGui")
     ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
+    -- Main Frame for the UI
+    local MainFrame = Instance.new("Frame")
+    MainFrame.Size = UDim2.new(0, 300, 0, 300)  -- Reduced size for the entire frame
+    MainFrame.Position = UDim2.new(0.5, -150, 0.5, -150)  -- Centered on screen
+    MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    MainFrame.Parent = ScreenGui
+
     -- First Frame (Left) for tabs and title
     local LeftFrame = Instance.new("Frame")
-    LeftFrame.Size = UDim2.new(0, 150, 1, 0)  -- Smaller width for the left frame
+    LeftFrame.Size = UDim2.new(0, 100, 1, 0)  -- Smaller width for the left frame
     LeftFrame.Position = UDim2.new(0, 0, 0, 0)
-    LeftFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-    LeftFrame.Parent = ScreenGui
+    LeftFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    LeftFrame.Parent = MainFrame
 
     local Title = Instance.new("TextLabel")
     Title.Size = UDim2.new(1, 0, 0, 40)
-    Title.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    Title.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
     Title.Text = config.Title or "NEVERWIN"
-    Title.TextSize = 20
+    Title.TextSize = 16
     Title.TextColor3 = Color3.fromRGB(255, 255, 255)
     Title.Parent = LeftFrame
 
     -- Enable dragging of the entire UI using the Title bar
-    makeDraggable(LeftFrame, Title)
+    makeDraggable(MainFrame, Title)
 
     -- Second Frame (Right) for the tab contents
     local RightFrame = Instance.new("Frame")
-    RightFrame.Size = UDim2.new(1, -150, 1, 0)  -- Adjust width to match LeftFrame size
-    RightFrame.Position = UDim2.new(0, 150, 0, 0)  -- Positioned right after LeftFrame
-    RightFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    RightFrame.Parent = ScreenGui
+    RightFrame.Size = UDim2.new(1, -100, 1, 0)  -- Take the rest of the space in MainFrame
+    RightFrame.Position = UDim2.new(0, 100, 0, 0)  -- Positioned right after LeftFrame
+    RightFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    RightFrame.Parent = MainFrame
 
     -- Tabs container
     local TabsContainer = Instance.new("Frame")
@@ -77,10 +84,10 @@ function UILibrary:CreateWindow(config)
         -- Create a button for the tab
         local TabButton = Instance.new("TextButton")
         TabButton.Size = UDim2.new(1, 0, 0, 30)
-        TabButton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+        TabButton.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
         TabButton.Text = name
         TabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        TabButton.TextSize = 16
+        TabButton.TextSize = 14
         TabButton.Parent = TabsContainer
 
         -- Create a content frame for the tab in the RightFrame
@@ -107,7 +114,7 @@ function UILibrary:CreateWindow(config)
         function tabElements:CreateSwitch(name, defaultState, callback)
             local SwitchFrame = Instance.new("Frame")
             SwitchFrame.Size = UDim2.new(1, 0, 0, 30)
-            SwitchFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+            SwitchFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
             SwitchFrame.Parent = TabContent
 
             local Label = Instance.new("TextLabel")
@@ -135,7 +142,7 @@ function UILibrary:CreateWindow(config)
         function tabElements:CreateSlider(name, min, max, default, callback)
             local SliderFrame = Instance.new("Frame")
             SliderFrame.Size = UDim2.new(1, 0, 0, 30)
-            SliderFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+            SliderFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
             SliderFrame.Parent = TabContent
 
             local Label = Instance.new("TextLabel")
