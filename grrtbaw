@@ -1,0 +1,151 @@
+-- UILibrary Module
+local UILibrary = {}
+
+-- Function to enable dragging for a frame (PC and Mobile)
+local function makeDraggable(frame, handle)
+    local dragging, dragInput, dragStart, startPos
+
+    handle.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = frame.Position
+
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+
+    handle.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
+
+    game:GetService("UserInputService").InputChanged:Connect(function(input)
+        if input == dragInput and dragging then
+            local delta = input.Position - dragStart
+            frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        end
+    end)
+end
+
+-- Create a new window with a title (no size and position input)
+function UILibrary:CreateWindow(config)
+    local ScreenGui = Instance.new("ScreenGui")
+    ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+    local MainFrame = Instance.new("Frame")
+    MainFrame.Size = UDim2.new(0, 600, 0, 400)  -- Default size
+    MainFrame.Position = UDim2.new(0.5, -300, 0.5, -200)  -- Centered by default
+    MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    MainFrame.Parent = ScreenGui
+
+    local Title = Instance.new("TextLabel")
+    Title.Size = UDim2.new(1, 0, 0, 40)
+    Title.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    Title.Text = config.Title or "Window"
+    Title.TextSize = 24
+    Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Title.Parent = MainFrame
+
+    -- Enable dragging of the window using the Title bar
+    makeDraggable(MainFrame, Title)
+
+    -- Store the tabs and elements
+    local tabs = {}
+    
+    function tabs:CreateTab(name)
+        local TabButton = Instance.new("TextButton")
+        TabButton.Size = UDim2.new(0, 100, 0, 30)
+        TabButton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+        TabButton.Text = name
+        TabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        TabButton.TextSize = 18
+        TabButton.Parent = MainFrame
+
+        local TabContent = Instance.new("Frame")
+        TabContent.Size = UDim2.new(1, 0, 1, -70)
+        TabContent.Position = UDim2.new(0, 0, 0, 40)
+        TabContent.Visible = false
+        TabContent.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+        TabContent.Parent = MainFrame
+
+        -- Toggle visibility between tabs
+        TabButton.MouseButton1Click:Connect(function()
+            for _, siblingTab in ipairs(MainFrame:GetChildren()) do
+                if siblingTab:IsA("Frame") then
+                    siblingTab.Visible = false
+                end
+            end
+            TabContent.Visible = true
+        end)
+
+        -- Return tab content frame to add elements
+        local tabElements = {}
+
+        function tabElements:CreateSwitch(name, defaultState, callback)
+            local SwitchFrame = Instance.new("Frame")
+            SwitchFrame.Size = UDim2.new(1, 0, 0, 40)
+            SwitchFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+            SwitchFrame.Parent = TabContent
+
+            local Label = Instance.new("TextLabel")
+            Label.Size = UDim2.new(0.7, 0, 1, 0)
+            Label.Text = name
+            Label.TextColor3 = Color3.fromRGB(255, 255, 255)
+            Label.TextSize = 16
+            Label.Parent = SwitchFrame
+
+            local Switch = Instance.new("TextButton")
+            Switch.Size = UDim2.new(0.2, 0, 0.8, 0)
+            Switch.Position = UDim2.new(0.75, 0, 0.1, 0)
+            Switch.Text = defaultState and "On" or "Off"
+            Switch.TextColor3 = defaultState and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+            Switch.Parent = SwitchFrame
+
+            Switch.MouseButton1Click:Connect(function()
+                defaultState = not defaultState
+                Switch.Text = defaultState and "On" or "Off"
+                Switch.TextColor3 = defaultState and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+                callback(defaultState)
+            end)
+        end
+
+        function tabElements:CreateSlider(name, min, max, default, callback)
+            local SliderFrame = Instance.new("Frame")
+            SliderFrame.Size = UDim2.new(1, 0, 0, 40)
+            SliderFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+            SliderFrame.Parent = TabContent
+
+            local Label = Instance.new("TextLabel")
+            Label.Size = UDim2.new(0.5, 0, 1, 0)
+            Label.Text = name
+            Label.TextColor3 = Color3.fromRGB(255, 255, 255)
+            Label.TextSize = 16
+            Label.Parent = SliderFrame
+
+            local Slider = Instance.new("TextButton")
+            Slider.Size = UDim2.new(0.4, 0, 0.8, 0)
+            Slider.Position = UDim2.new(0.55, 0, 0.1, 0)
+            Slider.Text = tostring(default)
+            Slider.TextColor3 = Color3.fromRGB(0, 255, 0)
+            Slider.Parent = SliderFrame
+
+            Slider.MouseButton1Click:Connect(function()
+                local value = math.random(min, max) -- replace with actual slider functionality
+                Slider.Text = tostring(value)
+                callback(value)
+            end)
+        end
+
+        return tabElements
+    end
+
+    return tabs
+end
+
+return UILibrary
