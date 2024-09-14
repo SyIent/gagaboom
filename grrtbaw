@@ -43,6 +43,7 @@ function UILibrary:CreateWindow(config)
     LeftFrame.Size = UDim2.new(0, 200, 1, 0)  -- Fixed width for the left frame
     LeftFrame.Position = UDim2.new(0, 0, 0, 0)
     LeftFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    LeftFrame.BackgroundTransparency = 0.6
     LeftFrame.Parent = ScreenGui
 
     local Title = Instance.new("TextLabel")
@@ -53,6 +54,11 @@ function UILibrary:CreateWindow(config)
     Title.TextColor3 = Color3.fromRGB(255, 255, 255)
     Title.Parent = LeftFrame
 
+    -- Adding rounded corners to LeftFrame
+    local UICornerLeft = Instance.new("UICorner")
+    UICornerLeft.CornerRadius = UDim.new(0, 12)
+    UICornerLeft.Parent = LeftFrame
+
     -- Enable dragging of the entire UI using the Title bar
     makeDraggable(LeftFrame, Title)
 
@@ -62,6 +68,11 @@ function UILibrary:CreateWindow(config)
     RightFrame.Position = UDim2.new(0, 200, 0, 0)
     RightFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     RightFrame.Parent = ScreenGui
+
+    -- Adding rounded corners to RightFrame
+    local UICornerRight = Instance.new("UICorner")
+    UICornerRight.CornerRadius = UDim.new(0, 12)
+    UICornerRight.Parent = RightFrame
 
     -- Tabs container
     local TabsContainer = Instance.new("Frame")
